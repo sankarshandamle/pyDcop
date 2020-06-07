@@ -1,0 +1,33 @@
+name: branin
+objective: min
+
+domains:
+  d1:
+    values: [-5 .. 10]
+    type: 'continuous'
+  d2:
+    values: [0 .. 15]
+    type: 'continuous'
+
+variables:
+  v1:
+    domain: d1
+  v2:
+    domain: d2
+
+constraints:
+  branin_1_2: 
+    type: intention
+    source: "./branin_constraint.py"
+    function: source.branin(v1, v2)
+
+agents:
+  a1:
+    capacity: 100
+  a2:
+    capacity: 100
+
+distribution_hints:
+  must_host:
+    a1: [v1]
+    a2: [v2]
