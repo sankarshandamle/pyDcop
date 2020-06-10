@@ -130,6 +130,11 @@ constraints:
     source: "./external_python_constraints.py"
     #
     function: source.diff_vars(v2, v3)
+    # The `properties` entry can be added to attribute additional properties to the 
+    # constraints (e.g. Lipschitz constant of the constraint).
+    properties:
+      Lipschitz_constant: 1.0
+      additional_property: 0.0
 
   cost_d1:
     type: intention

@@ -34,7 +34,7 @@ import random
 from copy import deepcopy
 
 import numpy as np
-from typing import Dict, Iterable, Any, Tuple, Callable, List, Union
+from typing import Dict, Iterable, Any, Tuple, Callable, List, Union, Optional
 
 from pydcop.dcop.objects import Variable
 from pydcop.utils.simple_repr import SimpleRepr
@@ -481,6 +481,7 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
         variables: Iterable[Variable],
         name: str = None,
         f_kwargs=False,
+        properties: Optional[Dict[str, Any]]=None,
     ) -> None:
         """
         A Relation defined from a python function.
@@ -505,6 +506,7 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
         variables names as keyword arguments. This is useful for function
         that only accept keyword arguments, for the function produced by
         json_serialization.function_from_str.
+        :param properties: dictionary of properties of the relation
         """
 
         try:
@@ -516,6 +518,7 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
         self._f = f
         self._variables = list(variables)
         self._f_kwargs = f_kwargs
+        self._properties = properties
 
         # rel var name => function arg name
         self._var_mapping = {}  # type: Dict[str, str]
@@ -534,6 +537,10 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
 
         else:
             self._var_mapping = {v.name: v.name for v in variables}
+
+    @property
+    def has_properties(self):
+        return not (self._properties is None)
 
     @property
     def expression(self):
@@ -611,6 +618,13 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
 
         else:
             raise ValueError("Assignment must be list or dict")
+
+    def get_property(self, property_name: str) -> Any:
+        """Returns the value of the property or None if failed"""
+        if self.has_properties:
+            return self._properties.get(property_name, None)
+        else:
+            return None
 
     def __call__(self, *args, **kwargs):
         if not kwargs:
@@ -1277,7 +1291,10 @@ def is_compatible(assignment1: Dict[str, Any], assignment2: Dict[str, Any]):
     return True
 
 
-def constraint_from_str(name: str, expression: str, all_variables: Iterable[Variable]):
+def constraint_from_str(
+        name: str, expression: str,
+        all_variables: Iterable[Variable],
+        properties: Optional[Dict[str, Any]]=None):
     """
     Generate a relation object from a string expression and a list of
     available variable objects.
@@ -1309,15 +1326,24 @@ def constraint_from_str(name: str, expression: str, all_variables: Iterable[Vari
                 '"{}"'.format(v, expression)
             )
 
-    return NAryFunctionRelation(f_exp, relation_variables, name, f_kwargs=True)
+    return NAryFunctionRelation(f_exp,
+                                relation_variables,
+                                name,
+                                f_kwargs=True,
+                                properties=properties)
 
 
 # We keep relation_from_str as an alias for now, but constraint_from_str
 # should be used.
 relation_from_str = constraint_from_str
 
-def constraint_from_external_definition(name: str,
-        source_file: str, expression: str, all_variables: Iterable[Variable]):
+def constraint_from_external_definition(
+        name: str,
+        source_file: str, 
+        expression: str, 
+        all_variables: Iterable[Variable],
+        properties: Optional[Dict[str, Any]]=None,
+        ):
 
     f_exp = ExpressionFunction(expression, source_file)
     relation_variables = []
@@ -1333,7 +1359,11 @@ def constraint_from_external_definition(name: str,
                 '"{}"'.format(v, expression)
             )
 
-    return NAryFunctionRelation(f_exp, relation_variables, name, f_kwargs=True)
+    return NAryFunctionRelation(f_exp,
+                                relation_variables,
+                                name,
+                                f_kwargs=True,
+                                properties=properties)
 
 
 def add_var_to_rel(
