@@ -1,0 +1,32 @@
+name: bird
+objective: max
+
+domains:
+  d1:
+    values: [-6.283185 .. 6.283185]
+    type: 'continuous'
+
+variables:
+  v1:
+    domain: d1
+  v2:
+    domain: d1
+
+constraints:
+  bird_1_2: 
+    type: intention
+    source: "./bird_constraint.py"
+    function: source.bird(v1, v2)
+    properties:
+        Lipschitz_constant: 1326.5
+
+agents:
+  a1:
+    capacity: 100
+  a2:
+    capacity: 100
+
+distribution_hints:
+  must_host:
+    a1: [v1]
+    a2: [v2]
