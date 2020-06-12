@@ -140,11 +140,7 @@ def generate(args) -> None:
         relation_path.absolute(),
         args.agent_count,
         args.graph_density,
-        args.lower_bound,
-        args.upper_bound,
-        args.number_of_values,
         args.random_seed,
-        args.plot,
     )
 
     # Define the graph
@@ -184,9 +180,7 @@ def generate_continuous_random(
     graph_density: float,
     lower_bound: float=0.0,
     upper_bound: float=1.0,
-    number_of_values: int=2,
     random_seed: int=1,
-    plot: bool=False,
 ) -> Tuple[DCOP, Dict, Dict]:
 
     # Set the seed
@@ -242,7 +236,7 @@ def generate_continuous_random(
         var_mapping[agent.name].append(f"v_{index}")
 
     # Create the DCOP
-    name = f"cdcop_random_bird_{agent_count}_{graph_density}_{number_of_values}"
+    name = f"cdcop_random_bird_{agent_count}_{graph_density}"
     dcop = DCOP(
         name,
         objective='max',
