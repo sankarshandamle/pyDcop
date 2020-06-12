@@ -66,8 +66,8 @@ else:
     print('This should never be reached (due to argparser choices)')
     sys.exit(1)
 
-dcop_cli_path = "~/pyDcop/pydcop/dcop_cli.py"
-data_directory = "~/pyDcop_out"
+dcop_cli_path = Path.home() / "pyDcop/pydcop/dcop_cli.py"
+data_directory = Path.home() / "pyDcop_out"
 
 for relation, seed_number, agent_count, graph_density in product(relation_list, seed_list, agent_list, density_list):
     try:
