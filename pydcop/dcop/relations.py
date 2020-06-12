@@ -543,6 +543,10 @@ class NAryFunctionRelation(AbstractBaseRelation, SimpleRepr):
         return not (self._properties is None)
 
     @property
+    def properties(self):
+        return self._properties
+
+    @property
     def expression(self):
         """
 

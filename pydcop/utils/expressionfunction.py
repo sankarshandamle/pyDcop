@@ -118,6 +118,10 @@ class ExpressionFunction(Callable, SimpleRepr):
         return self._expression
 
     @property
+    def source_file(self):
+        return str(self._source_file)
+
+    @property
     def variable_names(self) -> List[str]:
         """
         :return: a set of variable names that must be set when calling f

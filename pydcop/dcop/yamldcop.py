@@ -136,7 +136,11 @@ def dcop_yaml(dcop: DCOP) -> str:
 def _yaml_domains(domains):
     d_dict = {}
     for domain in domains:
-        d_dict[domain.name] = {"values": list(domain.values), "type": domain.type}
+        if type(domain) is ContinuousDomain:
+            d_dict[domain.name] = {"values": list([f'{domain.lower_bound} .. {domain.upper_bound}']), "type": domain.type}
+        else:
+            # Domain
+            d_dict[domain.name] = {"values": list(domain.values), "type": domain.type}
     return yaml.dump({"domains": d_dict})  #  , default_flow_style=False)
 
 
@@ -303,8 +307,12 @@ def _yaml_constraints(constraints: Iterable[RelationProtocol]):
     constraints_dict = {}
     for r in constraints:
         if hasattr(r, "expression"):
-
-            constraints_dict[r.name] = {"type": "intention", "function": r.expression}
+            constraints_dict[r.name] = {
+                "type": "intention",
+                "function": r.expression,
+                "source": r.function.source_file,
+                "properties": r.properties,
+            }
         else:
             # fallback to extensional constraint
             variables = [v.name for v in r.dimensions]
