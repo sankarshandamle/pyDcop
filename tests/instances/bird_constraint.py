@@ -55,3 +55,9 @@ def bird(x, y):
     """
     value = np.sin(y) * np.exp((1.-np.cos(x))**2) + np.cos(x) * np.exp((1. - np.sin(y))**2) + (x - y)**2
     return -value
+
+def bird_normalized_inputs(x, y):
+    """Return the value of the bird function for normalized inputs"""
+    x_normalized = (x * 4.0 * np.pi) - 2.0 * np.pi
+    y_normalized = (y * 4.0 * np.pi) - 2.0 * np.pi
+    return bird(x_normalized, y_normalized)

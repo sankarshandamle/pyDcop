@@ -92,7 +92,7 @@ import os
 
 # from numpy.random import random
 from pydcop.commands.generators import graphcoloring, meetingscheduling, ising, agents, \
-    scenario
+    scenario, cdcop_random_bird
 from pydcop.commands.generators.iot import generate_iot
 from pydcop.commands.generators.secp import generate_secp, parser_secp
 from pydcop.commands.generators.smallworld import generate_small_world
@@ -135,6 +135,7 @@ def set_parser(main_subparsers):
     graphcoloring.init_cli_parser(subparsers)
     meetingscheduling.init_cli_parser(subparsers)
     ising.init_cli_parser(subparsers)
+    cdcop_random_bird.init_cli_parser(subparsers)
 
     agents.init_cli_parser(subparsers)
     scenario.init_cli_parser(subparsers)
